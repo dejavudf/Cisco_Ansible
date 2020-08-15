@@ -1,0 +1,13 @@
+---
+- name: Show IOS version and interfaces on switches
+  hosts: ios
+  gather_facts: false
+  connection: local
+  tasks:
+  - name: Run multiple commands and evaluate the output
+    ios_command:
+      authorize: "yes"
+      commands: show version
+      # commands: show interfaces
+    register: print_output
+  - debug: var=print_output.stdout

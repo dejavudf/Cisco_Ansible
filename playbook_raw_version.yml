@@ -1,0 +1,9 @@
+---
+- name: Show version of IOS running on routers
+  hosts: ios
+  gather_facts: false
+  tasks:
+  - name: Use raw mode to show version
+    raw: "show version"
+    register: print_output
+  - debug: var=print_output.stdout_lines
