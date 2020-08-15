@@ -1,0 +1,55 @@
+---
+- hosts: ios
+  connection: local
+  gather_facts: yes
+
+  vars:
+    cli:
+        host: "{{ inventory_hostname }}"
+        username: "{{ v_username }}"
+        password: "{{ v_password }}"
+        authorize: yes
+        auth_pass: "{{ v_password }}"
+        timeout: 30
+
+  tasks:
+    - name: Get Vault Variables
+      include_vars: ./group_vars/creds.yml
+    - name: Get Device Show Command List
+      include_vars: ./group_vars/ios_cmdlist.yml
+
+    - name: Execute Show Commands on Cisco IOS Devicesask
+      ios_command:
+        commands: "{{ item }} "
+        provider: "{{ cli }} "
+      with_items:
+          - "{{ ios_show_commands }}"
+      register: output
+      ignore_errors: yes
+
+    - name: Debug with -v to show output contents only when debugging
+      debug:
+        var: output
+        verbosity: 1
+
+    - name: Create Directory
+      file: 
+        path: ./logs_{{ group_names[0] }}_{{ ansible_date_time.date }}
+        state: directory
+    - debug:
+        var: group_names
+
+    - name: Generate Device Show Command File(s)
+      template: 
+        src=./templates/show-commands-template.j2
+        dest=./logs_{{ group_names[0] }}_{{ ansible_date_time.date }}/{{ inventory_hostname }}.show-commands.txt
+
+      with_items:
+        - "{{ output }}"
+  
+    - name: Archive log files for "{{ group_names }}"
+      archive:
+        path: ./logs_{{ group_names[0] }}_{{ ansible_date_time.date }}
+        dest: "./logs_{{ group_names[0] }}_{{ ansible_date_time.date }}.zip"
+        format: zip
+
