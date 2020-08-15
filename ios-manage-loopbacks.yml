@@ -1,0 +1,24 @@
+---
+- name: Add Loopback L3 Interfaces
+  hosts: ios
+  connection: network_cli
+  gather_facts: no
+  vars_files:
+    - ./data/resource_modules/loopbacks.yml
+  vars:
+    - thestate: merged
+
+  tasks:
+
+  - name: Add loopback interfaces
+    ios_interfaces:
+      config: "{{ loopbacks }}"
+      state: merged
+    when: thestate == "merged"
+
+  - name: Delete loopback interfaces
+    ios_config:
+      lines: "no interface {{ item.name }}"
+    loop: "{{ loopbacks }}"
+    when: thestate == "deleted"
+    ignore_errors: yes

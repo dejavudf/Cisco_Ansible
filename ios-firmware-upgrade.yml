@@ -1,0 +1,93 @@
+---
+- name: Upgrade IOS Router Firmware
+  hosts: ios
+  connection: network_cli
+  gather_facts: no
+  vars:
+    connect_timeout: 50
+    command_timeout: 50
+    compliant_ios_version: 16.08.01
+    imagefile: "imagefile.txt"
+  vars_files:
+    - default_vars.yml
+    - ./credentials/scp_credentials.yml
+
+  tasks:
+    - name: Gather router facts
+      ios_facts:
+
+    - name: Show current ios version
+      debug:
+        var: ansible_net_version
+
+    - name: CHECK WHETHER CORRECT OS IS ALREADY INSTALLED
+      fail:
+        msg: "Nothing to upgrade"
+      when: compliant_ios_version == ansible_net_version
+
+    - name: Check contents of bootflash
+      cli_command:
+        command: "dir flash:"
+      register: flash_output
+
+    - name: Delete image file from bootflash
+      cli_command:
+        command: "delete flash:{{imagefile}}"
+        prompt:
+          - "Delete filename"
+          - "Delete bootflash:"
+        answer:
+          - "\r"
+          - "\r"
+      when: flash_output.stdout.find("{{imagefile }}") != -1
+      register: flash_output
+
+    - name: Copy image file over to router
+      cli_command:
+        check_all: True
+        command: "copy scp://{{ scp_user }}@{{ scp_server }}/{{imagefile}} flash:"
+        prompt:
+          - "Destination"
+          - "Password:"
+        answer:
+          - "{{ imagefile }}"
+          - "{{scp_password}}"
+
+    - name: Delete all entries in the bootable image list
+      cli_config:
+        config: no boot system
+
+    - name: Load the new system image after the next system reload
+      cli_config:
+        config: "boot system flash: {{ imagefile }}"
+
+    - name: Copy the running-config to the startup-config
+      ios_config:
+        save_when: always
+
+    - name: Reload router
+      cli_command:
+        command: reload
+        prompt:
+          - confirm
+        answer:
+          - y
+
+    - name: Wait for router to come back up
+      wait_for_connection:
+        connect_timeout: 30
+        sleep: 10
+        timeout: 300
+        delay: 60
+        
+    - name: Check installed OS after upgrade
+      ios_facts:
+
+    - name: Print installed OS
+      debug:
+        var: ansible_net_version
+
+    - name: Assert That It is Running The Desired Image
+      assert:
+        that:
+          - "{{ ansible_net_version }}" == "{{ compliant_ios_version }}"

@@ -1,0 +1,19 @@
+---
+- hosts: switches
+  gather_facts: no
+  connection: local
+
+  tasks: 
+    - name: Provider
+      set_fact:
+        provider: 
+          host: "{{ inventory_hostname }}"
+          username: "{{ username }}"
+          password: "{{ password }}"
+
+    - name: configure hostname    
+      ios_config:
+        lines: 
+        - username user1 privilege 15 secret +Ol$%3g_:0p
+        provider: "{{ provider }}"
+

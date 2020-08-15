@@ -1,0 +1,62 @@
+---
+- name: Clear IOS backups from webserver
+  hosts: webserver
+  gather_facts: no
+  vars_files:
+    - default_vars.yml
+
+  tasks:
+    - name: Clear existing backups from ios_backups directory
+      file:
+        state: absent
+        path: ~/ios_backups/
+
+
+- name: Clear IOS backups from Tower Server
+  hosts: tower
+  gather_facts: no
+  vars_files:
+    - default_vars.yml
+    - ./credentials/tower-credentials.yml
+
+  tasks:
+    - name: Clear existing backups from ios_backups directory
+      file:
+        state: absent
+        path: /tmp/ios_backups/
+      become: yes
+
+    - name: Remove Ansible Tower Config Drift template
+      tower_job_template:
+          name: "IOS Check for Configuration Drift"
+          job_type: "run"
+          # inventory: "IOS Github-sourced Routers"
+          project: "Ansible IOS Demo Exercises"
+          playbook: "ios-drift-detect.yml"
+          # credential: "maf-ios-demo-private"
+          # survey_enabled: true
+          # survey_spec: "{{ lookup('template', '/tmp/drift_survey.json') }}"
+          tower_username: "{{ TOWER_USERNAME }}"
+          tower_password: "{{ TOWER_PASSWORD }}"
+          tower_host: https://ansibletower.michaelanthonyford.com
+          validate_certs: no
+          # diff_mode_enabled: yes
+          state: absent
+      delegate_to: localhost
+
+    - name: Remove Ansible Tower Config Restore template
+      tower_job_template:
+          name: "IOS Restore Config from Backup"
+          job_type: "run"
+          # inventory: "IOS Github-sourced Routers"
+          project: "Ansible IOS Demo Exercises"
+          playbook: "ios-restore-config.yml"
+          # credential: "maf-ios-demo-private"
+          # survey_enabled: true
+          # survey_spec: "{{ lookup('template', '/tmp/restore_survey.json') }}"
+          tower_username: "{{ TOWER_USERNAME }}"
+          tower_password: "{{ TOWER_PASSWORD }}"
+          tower_host: https://ansibletower.michaelanthonyford.com
+          validate_certs: no
+          state: absent
+      delegate_to: localhost

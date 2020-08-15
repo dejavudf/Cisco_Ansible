@@ -1,0 +1,44 @@
+---
+- name: Populate Service Now CMDB with Network elements
+  hosts: ios
+  gather_facts: no
+  connection: network_cli
+  # vars:
+  #   populate_cmdb: true
+  vars_files:
+    - default_vars.yml
+    - ./credentials/servicenow-credentials.yml
+
+  tasks:
+
+  - name: Gather IOS facts
+    ios_facts:
+
+  - name: Create a network host record for each network element
+    snow_record:
+      state: present
+      table: cmdb_ci_netgear
+      username: "{{ SN_USERNAME }}"
+      password: "{{ SN_PASSWORD }}"
+      instance: "{{ SN_INSTANCE }}"
+      data:
+        name: "{{ inventory_hostname }}"
+        manufacturer: cisco
+        firmware_manufacturer: cisco
+        device_type: router
+        model_id: "{{ ansible_net_model }}"
+        model_number: "{{ ansible_net_model }}"
+        assigned_to: "Michael Hoefer"
+        firmware_version: "{{ ansible_facts.net_version }}"
+        serial_number: "{{ ansible_facts.net_serialnum }}"
+        ip_address: "{{ ansible_host }}"
+        mac_address: '{{ ansible_facts.net_interfaces["GigabitEthernet1"].macaddress }}'
+        ports: '{{ ansible_facts.net_interfaces["GigabitEthernet1"].mediatype }}'
+    register: new_host
+
+  # - debug: var=new_host.record
+  # - debug: var=ansible_facts
+
+  # - name: include vars
+  #   include_role:
+  #     name: michaelford85.ansible_servicenow_cmdb
