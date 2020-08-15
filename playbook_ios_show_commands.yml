@@ -1,30 +1,7 @@
 ---
-###############################################################################
-# This playbook utilizes the ios_command ansible module to execute a set of
-# show commands against the cisco ios devices defined in the [cisco_xe]
-# group within the hosts file.   The command iterates over a list of show commands
-# and saves the result of each command into the output variable.
-#
-# The output variable is then displayed as part of the playbook run
-#
-# The contents of the output variable are then saved using two different methods.
-# device-output.txt has the raw output format which is a JSON data structure
-# device.cfg saves the results of the first command sent which in this case
-# is the show run command (hence the .cfg file type)
-#
-# The final play uses the templates module to save the show command output in the
-# more traditional text based output.
-#
-# The resulting output files are saved in the ./logs directory
-#
-# This version only includes show commands that will likely work.
-#
-# EXECUTION:
-# ansible-playbook -i hosts ios_show_lab_brief.yml
-###############################################################################
 
-- name: Pull show commands form Cisco IOS_XE Always On Sandbox device
-  hosts: cisco_xe
+- name: Pull show commands form Cisco IOS
+  hosts: ios
 
   gather_facts: False
   ignore_errors: yes
