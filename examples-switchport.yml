@@ -1,0 +1,24 @@
+---
+-  hosts: all
+   connection: local
+   gather_facts: no
+
+
+   tasks:
+     - name: Set interface 10001 to access mode and vlan to 12
+       cisco_snmp_switchport:
+         host={{ inventory_hostname }}
+         version=2c
+         community=private
+         mode=access
+         interface_id=10001
+         access_vlan=12
+
+     - name: Change FastEthernet0/2 to trunk mode with native vlan 12
+       cisco_snmp_switchport:
+         host={{ inventory_hostname }}
+         version=2c
+         community=private
+         mode=trunk
+         interface_name=FastEthernet0/2
+         native_vlan=12
