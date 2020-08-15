@@ -1,27 +1,4 @@
 ---
-###############################################################################
-# This playbook utilizes the Ansible network engine role and a number of other
-# modules.
-#
-# This playbook
-#   - executes a "show arp" command on the designated group
-#   - formats and saves the output to a text file
-#   - loads the properly formatted show command output
-#   - uses the network engine textfsm_parser to parse the output
-#   - and defines a list of vrf names for the device and outputs that list to
-#     stdout
-#
-# Ultimately that list will be used to get the ARP table from each VRf
-#
-#
-# EXECUTION:
-# ansible-playbook -i hosts get_vrfs.yml --ask-vault-pass
-#
-# To display the output variable run the playbook with a single v
-# ansible-playbook -i hosts get_vrfs.yml --ask-vault-pass -v
-#
-# Vault Password: Cisco123
-###############################################################################
 
 - hosts: cisco_xe
   gather_facts: False
