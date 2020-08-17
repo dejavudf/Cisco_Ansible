@@ -14,4 +14,4 @@
     - name: Save config to file
       copy:
         content: "{{ show_run.stdout[0] }}"
-        dest: "./output/{{inventory_hostname}}-{{ansible_date_time.date}}.txt"
+        dest: "./output/{{inventory_hostname}}-{{ansible_date_time}}.txt"
