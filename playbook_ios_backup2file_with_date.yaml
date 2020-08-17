@@ -1,5 +1,4 @@
-   
-   
+   ---   
    - name: Get running config
      ios_command:
        commands: show run
