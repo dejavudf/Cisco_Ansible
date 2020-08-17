@@ -1,0 +1,17 @@
+#########################################################
+#                                                       #
+#               XPTO - XIS PE TE ALL                    #
+#                                                       #
+#                                                       #
+#  Acesso permitido somente a pessoas autorizadas.      #
+#  Caso nao seja usuario autorizado, desconecte-se      #
+#  imediatamente, respeitando as regras da empresa e a  #
+#  legislacao em vigor.                                 #
+#  O uso improprio ou nao autorizado deste sistema      #
+#  resultara em acoes disciplinares administrativas,    #
+#  civis e criminais.                                   #
+#  Continuando a utilizacao deste sistema, voce indica  #
+#  sua consciencia e consentimento com esses termos e   #
+#  condicoes de uso.                                    #
+#                                                       # 
+#########################################################
