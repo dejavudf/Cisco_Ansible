@@ -6,7 +6,7 @@
   tasks:
     - name: Get timestamp from the system
       shell: date "+%Y%m%d"
-      register: tstamp
+      register: data_arquivo
     - name: Get running config
       ios_command:
         commands: show run
@@ -14,4 +14,4 @@
     - name: Save config to file
       copy:
         content: "{{ show_run.stdout[0] }}"
-        dest: "./output/{{inventory_hostname}}-{{tstamp}}.txt"
+        dest: "./output/{{inventory_hostname}}-{{data_arquivo}}.txt"
