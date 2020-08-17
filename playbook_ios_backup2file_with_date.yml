@@ -4,9 +4,9 @@
   gather_facts: false
   connection: local
   tasks:
-    - name: Ansible date fact example
-      debug:
-        var=ansible_date_time.date
+    - name: Get timestamp from the system
+      shell: "date +%Y%m%d"
+      register: tstamp
     - name: Get running config
       ios_command:
         commands: show run
