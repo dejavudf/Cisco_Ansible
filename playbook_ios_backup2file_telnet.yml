@@ -1,6 +1,10 @@
 ---
 - name: Backup running-config on routers
+<<<<<<< HEAD
   hosts: ios
+=======
+  hosts: iost
+>>>>>>> b3fea51ef42f7574c2ae3b7321cce5b9f021253e
   gather_facts: false
   connection: local
   tasks:
@@ -11,9 +15,19 @@
       login_prompt: "Username: "
       prompts:
         - "[>#]"
+<<<<<<< HEAD
       command: show run
     register: print_output
   - name: save output to a file
     copy:
       content: "{{ print_output.stdout[0] }}"
+=======
+      command:
+        - terminal length 0
+        - show run
+    register: print_output
+  - name: save output to a file
+    copy:
+      content: "{{ print_output }}" 
+>>>>>>> b3fea51ef42f7574c2ae3b7321cce5b9f021253e
       dest: "./output/{{ inventory_hostname }}.txt"
