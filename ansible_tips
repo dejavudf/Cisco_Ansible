@@ -1,4 +1,4 @@
-ANSIBLE:
+ANSIBLE - teste:
 yamllint = cmd toot for check YML ident
 
 ansible date var:
