@@ -4,6 +4,9 @@
   gather_facts: false
   connection: local
   tasks:
+    - name: Ansible date fact example
+      debug:
+        var=ansible_date_time.date
     - name: Get running config
       ios_command:
         commands: show run
