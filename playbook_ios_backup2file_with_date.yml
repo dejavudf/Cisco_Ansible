@@ -1,4 +1,9 @@
 ---
+- name: get date
+  hosts: localhost
+  tasks:
+    - debug: var=ansible_date_time
+---
 - name: Backup running-config on routers
   hosts: ios
   gather_facts: false
