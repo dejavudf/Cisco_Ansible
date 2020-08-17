@@ -5,7 +5,7 @@
   connection: local
   tasks:
     - name: Get timestamp from the system
-      shell: "date +%Y%m%d"
+      shell: date "+%Y%m%d"
       register: tstamp
     - name: Get running config
       ios_command:
