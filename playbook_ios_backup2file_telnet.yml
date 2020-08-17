@@ -1,0 +1,21 @@
+---
+- name: Backup running-config on routers
+  hosts: iost
+  gather_facts: false
+  connection: local
+  tasks:
+  - name: run show commands
+    telnet:
+      user: alex
+      password: Ab123456
+      login_prompt: "Username: "
+      prompts:
+        - "[>#]"
+      command:
+        - terminal length 0
+        - show run
+    register: print_output
+  - name: save output to a file
+    copy:
+      content: "{{ print_output }}" 
+      dest: "./output/{{ inventory_hostname }}.txt"
